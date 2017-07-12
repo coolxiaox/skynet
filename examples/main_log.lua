@@ -1,13 +1,17 @@
 local skynet = require "skynet"
+local harbor = require "skynet.harbor"
+require "skynet.manager"	-- import skynet.monitor
+
+local function monitor_master()
+	harbor.linkmaster()
+	print("master is down")
+	skynet.exit()
+end
 
 skynet.start(function()
 	print("Log server start")
-	local service = skynet.newservice("service_mgr")
 	skynet.monitor "simplemonitor"
-	local lualog = skynet.newservice("lualog")
-	local console = skynet.newservice("console")
 	local log = skynet.newservice("globallog")
---	skynet.launch("snlua","testgroup_c 11 1")
-	skynet.exit()
+	skynet.fork(monitor_master)
 end)
 
